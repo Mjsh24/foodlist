@@ -1,5 +1,12 @@
 import { configured, supabase } from './supabase.js'
-import seed from '../../docs/dummy/seed/products.json'
+
+// 로컬 모드 시드 데이터. 이 파일은 레포 밖(docs/dummy/seed)에 있어서 배포 환경(Vercel 등)에는 없다
+// import.meta.glob은 파일이 없으면 빈 객체를 돌려주므로 빌드가 실패하지 않고, 시드는 빈 목록이 된다
+const seedModules = import.meta.glob('../../docs/dummy/seed/products.json', {
+  eager: true,
+  import: 'default',
+})
+const seed = Object.values(seedModules)[0] ?? []
 
 // Supabase 키가 없으면 브라우저(localStorage)에 저장하는 로컬 모드로 동작한다
 export const mode = configured ? 'supabase' : 'local'
